@@ -1,98 +1,73 @@
 class Song
   attr_accessor :name, :artist_name
   @@all = []
-  
-  def self.create 
-    # initializes a song and saves it to the @@all class variable 
-    # either literally or through the class method
-    s = self.new 
-    s.save 
-    s
-  end 
- 
-  def self.create_by_name(string_name_of_the_song)
-    # takes in the string name of a song and returns a 
-    # song instance with that name set as its name property 
-    s = self.new 
-    s.name = string_name_of_the_song
-    s.save 
-    s
-    # and the song being saved into the @@all class variable.
-  end
- 
-  def self.new_by_name(string_name_of_the_song)
-    # takes in the string name of a song and returns a 
-    # song instance with that name set as its name property. 
-    
-    # should return an instance of Song and not a simple string or anything else.
-    s = self.new 
-    s.name = string_name_of_the_song
-    s
-    # there's nothing in the instructions about saving to the @@all class variable
-  end 
-  
-  def self.find_by_name(string_name_of_the_song) 
-    # accepts the string name of a song and returns 
-    # the matching instance of the song with that name.
-    self.all.detect {|i| i.name == string_name_of_the_song}
-  end
-  
-  def self.find_or_create_by_name(find_this_song)
-    self.find_or_create_by_name(name)
-	self.find_by_name(name) || self.create_by_name(name)
-end
-did_i_find_it = self.all.detect {|x| x.name == find_this_song}
-    if did_i_find_it == nil
-      s = self.new 
-      s.name = find_this_song
-      s.save 
-      s
-    else
-      did_i_find_it
-    end
-  end 
 
-  def self.alphabetical
-    self.all.sort_by { |x| x.name}
-  end 
-  
-  def self.new_from_filename(mp3_formatted_file)
-    # Build a class constructor that accepts a filename in the 
-    # format of " - .mp3", for example "Taylor Swift - Blank Space.mp3".
-    
-    # Given Song.new_from_filename("Taylor Swift - Blank Space.mp3"), 
-    # the constructor should return a new Song instance with the song 
-    # name set to Blank Space and the artist_name set to Taylor Swift.
-    c = self.new 
-    c.name = mp3_formatted_file.split(/[^a-zA-Z\s]|\s-\s/)[1] 
-    c.artist_name = mp3_formatted_file.split(/[^a-zA-Z\s]|\s-\s/)[0]
-    c
-  end 
-  
-  def self.create_from_filename(mp3_formatted_file)
-    # Build a class constructor that accepts a filename in the 
-    # format of " - .mp3", for example "Taylor Swift - Blank Space.mp3".
-    
-    # Given Song.new_from_filename("Taylor Swift - Blank Space.mp3"), 
-    # the constructor should return a new Song instance with the song 
-    # name set to Blank Space and the artist_name set to Taylor Swift.
-    c = self.new 
-    c.name = mp3_formatted_file.split(/[^a-zA-Z\s]|\s-\s/)[1] 
-    c.artist_name = mp3_formatted_file.split(/[^a-zA-Z\s]|\s-\s/)[0]
-    c.save
-    c
-  end 
- 
   def self.all
     @@all
   end
- 
+
   def save
     self.class.all << self
   end
-  
-  def self.destroy_all
-    self.all.clear
+
+  def self.create
+    song = self.new
+    #@@all << song
+    song
   end
- 
+  
+  def self.new_by_name(name)
+    song = self.new 
+    song.name = name
+    song
+  end
+  
+  def self.create_by_name(name)
+    song = self.new 
+    song.name = name
+    @@all << song
+    song
+  end
+  
+  def self.find_by_name(name)
+    @@all.find{|x| x.name == name}
+  end
+  
+  def self.find_or_create_by_name(name)
+      #if self.find_by_name(name) == nil 
+        #self.create_by_name(name)
+      #else
+        #self.find_by_name(name)
+      #end
+      self.find_by_name(name) || self.create_by_name(name)
+      #the above statement is saying do this(if it is true) or that (if the first thing is not true and the second thing is true)
+  end
+  
+  def self.alphabetical()
+    #returns all the songs instances in ascending (a-z) alphabetical order.
+    @@all.sort_by{|x| x.name}
+  end
+  
+  
+  def self.new_from_filename(name)
+    song = self.new 
+    song.name = (name.split(" - ")[1].chomp(".mp3"))
+    song.artist_name = (name.split(" - ")[0])
+    song
+  end
+  
+  def self.create_from_filename(name)
+  #class method should not only parse the filename correctly but should also save the song
+    song = self.new
+    song.name = (name.split(" - ")[1].chomp(".mp3"))
+    song.artist_name = (name.split(" - ")[0])
+    @@all << song
+    song
+  end
+  
+  def self.destroy_all()
+    #reset the state of the @@all class variable to an empty array thereby deleting all previous song instances.
+    @@all.clear
+  end
+
 end
